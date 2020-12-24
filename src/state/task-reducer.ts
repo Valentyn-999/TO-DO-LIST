@@ -1,4 +1,4 @@
-import {TasksStateType} from "../App";
+import {TasksStateType} from "../AppWithRedux";
 import {v1} from "uuid";
 import {AddTodolistActionType, RemoveTodolistActionType} from "./todolists-reducer";
 
@@ -34,6 +34,7 @@ const initialState: TasksStateType = {}
 
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionType) => {
     switch (action.type) {
+
         case 'REMOVE-TASK': {
             const stateCopy = {...state};
             const tasks = state[action.todoListID];
@@ -50,13 +51,17 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             return stateCopy;
         }
         case 'CHANGE-TASK-STATUS': {
-            const stateCopy = {...state};
-            let tasks = stateCopy[action.todoListID];
-            let task = tasks.find(t => t.id === action.taskID);
-            if (task) {
-                task.isDone = action.isDone;
-            }
-            return stateCopy;
+            // const todoListTasks = state[action.todoListID]
+            // // const stateCopy = {...state};
+            // // let tasks = stateCopy[action.todoListID];
+            // let task = todoListTasks.find(t => t.id === action.taskID);
+            // if (task) {
+            //     task.isDone = action.isDone;
+            // }
+            return ({...state,
+                [action.todoListID]: state[action.todoListID]
+                    .map(task => task.id === action.taskID ? {...task, isDone: action.isDone} : task)
+            });
         }
         case 'CHANGE-TASK-TITLE': {
             const stateCopy = {...state};
@@ -66,7 +71,10 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             if (task) {
                 task.title = action.title;
             }
-            return stateCopy;
+            return ({...state,
+                [action.todoListID]: state[action.todoListID]
+                    .map(task => task.id === action.taskID ? {...task, title: action.title} : task)
+            });;
         }
         case 'ADD-TODOLIST': {
             const stateCopy = {...state};
