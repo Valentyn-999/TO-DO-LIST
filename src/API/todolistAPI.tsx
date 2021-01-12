@@ -15,11 +15,39 @@ type CommonResponseType<T = {}> = {
     data: T
 }
 
-type TodolistType= {
+export type TodolistType= {
     id: string
     addedDate: string
     order: number
     title: string
+}
+
+export enum TaskStatuses {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 3
+}
+export enum TaskpPiorities {
+    Low,
+    Middle,
+    Hi,
+    Urgently,
+    Later
+}
+
+
+export type TaskType = {
+    description: string
+    title: string
+    status: TaskStatuses
+    priority: TaskpPiorities
+    startDate: string
+    deadline: string
+    id: string
+    todoListId: string
+    order: number
+    addedDate: string
 }
 
 export const todolistAPI = {

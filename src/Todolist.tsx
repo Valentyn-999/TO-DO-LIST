@@ -1,16 +1,17 @@
 import React, {useCallback} from 'react';
-import {FilterValuesType} from './AppWithRedux';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Button, Checkbox, IconButton} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import {Task} from './Task';
+import {TaskStatuses, TaskType} from './API/todolistAPI';
+import {FilterValuesType} from './state/todolists-reducer';
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
+// export type TaskType = {
+//     id: string
+//     title: string
+//     status: TaskStatuses
+// }
 
 type PropsType = {
     id: string
@@ -19,7 +20,7 @@ type PropsType = {
     removeTask: (taskId: string, todolistId: string) => void
     changeFilter: (value: FilterValuesType, todolistId: string) => void
     _addTask: (title: string, todolistId: string) => void
-    changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
+    changeTaskStatus: (id: string, status: TaskStatuses, todolistId: string) => void
     _removeTodolist: (id: string) => void
     _changeTodolistTitle: (id: string, newTitle: string) => void
     filter: FilterValuesType
@@ -60,15 +61,15 @@ export const Todolist: React.FC<PropsType> = React.memo( ({
     let tasksForTodolist = tasks
 
     if (filter === "active") {
-        tasksForTodolist = tasks.filter(t => t.isDone === false);
+        tasksForTodolist = tasks.filter(t => t.status === TaskStatuses.New);
     }
     if (filter === "completed") {
-        tasksForTodolist = tasks.filter(t => t.isDone === true);
+        tasksForTodolist = tasks.filter(t => t.status === TaskStatuses.Completed);
     }
 
     const onClickHandler =  useCallback((taskID: string) => { removeTask(taskID, id)},[id])
-    const onChangeHandler =  useCallback((taskID: string, isDone: boolean) => {
-        changeTaskStatus (taskID, isDone, id)
+    const onChangeHandler =  useCallback((taskID: string, status: TaskStatuses) => {
+        changeTaskStatus (taskID, status, id)
     },[changeTaskStatus, id] )
     const onTitleChangeHandler = useCallback((taskID: string, title: string) => {
         changeTaskTitle(taskID, title, id);
@@ -94,9 +95,9 @@ export const Todolist: React.FC<PropsType> = React.memo( ({
                     )
 
 
-                    return <div key={t.id} className={t.isDone ? "is-done" : ""}>
+                    return <div key={t.id} className={t.status === 2 ? "is-done" : ""}>
                         <Checkbox
-                            checked={t.isDone}
+                            checked={t.status === 2}
                             color="primary"
                             onChange={() => onChangeHandler}
                         />
